@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escapada Veraniega: Lagunas de Ruidera & Ruta Cervantina</title>
+  <style>
+    :root {
+      --bg: #f4fbfb;
+      --card-bg: #ffffff;
+      --header-grad: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+      --primary: #0284c7;
+      --primary-light: #e0f2fe;
+      --secondary: #10b981;
+      --accent: #f97316;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #f1f5f9;
+      --radius: 16px;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 40px; line-height: 1.5; }
+
+    header { 
+      background: var(--header-grad); 
+      color: #fff; 
+      padding: 24px 20px 20px 20px; 
+      text-align: center; 
+      border-bottom-left-radius: 24px;
+      border-bottom-right-radius: 24px;
+      box-shadow: 0 4px 20px rgba(6, 182, 212, 0.35);
+    }
+    header h1 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    header p { font-size: 0.9rem; opacity: 0.95; font-weight: 500; }
+
+    .progress-bar-container { 
+      background: #fff; 
+      margin: -15px 16px 16px 16px; 
+      padding: 14px 18px; 
+      border-radius: var(--radius); 
+      box-shadow: var(--shadow);
+      position: relative;
+      z-index: 10;
+    }
+    .progress-info { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 800; margin-bottom: 8px; color: var(--primary); letter-spacing: 0.5px; }
+    .progress-bg { background: #f1f5f9; height: 10px; border-radius: 20px; overflow: hidden; }
+    .progress-fill { background: linear-gradient(90deg, #10b981, #0284c7); height: 100%; width: 0%; transition: width 0.4s ease; }
+
+    nav.tab-bar { 
+      display: flex; 
+      overflow-x: auto; 
+      background: rgba(255, 255, 255, 0.95); 
+      backdrop-filter: blur(8px);
+      padding: 8px 12px;
+      position: sticky; 
+      top: 0; 
+      z-index: 100; 
+      scrollbar-width: none; 
+      border-bottom: 1px solid #e2e8f0;
+    }
+    nav.tab-bar::-webkit-scrollbar { display: none; }
+    .tab-btn { 
+      flex: 0 0 auto; 
+      padding: 8px 14px; 
+      border: none; 
+      background: #f1f5f9; 
+      font-size: 0.85rem; 
+      font-weight: 700; 
+      color: var(--text-muted); 
+      cursor: pointer; 
+      border-radius: 20px;
+      margin-right: 6px;
+      transition: all 0.2s ease;
+      white-space: nowrap; 
+    }
+    .tab-btn.active { background: var(--primary); color: #ffffff; }
+
+    main { max-width: 800px; margin: 16px auto; padding: 0 16px; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card { 
+      background: var(--card-bg); 
+      border-radius: var(--radius); 
+      padding: 20px; 
+      margin-bottom: 18px; 
+      box-shadow: var(--shadow); 
+      border: 1px solid #f1f5f9; 
+    }
+    .card-title { font-size: 1.15rem; font-weight: 800; color: var(--text); margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between; }
+    .card-subtitle { font-size: 0.85rem; color: var(--accent); font-weight: 700; margin-bottom: 14px; }
+
+    .item-row { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px dashed #e2e8f0; align-items: flex-start; }
+    .item-row:last-child { border-bottom: none; }
+    .item-row input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--secondary); cursor: pointer; margin-top: 2px; border-radius: 6px; }
+    .item-time { font-size: 0.75rem; font-weight: 800; color: var(--primary); background: var(--primary-light); padding: 2px 8px; border-radius: 6px; display: inline-block; margin-bottom: 4px; }
+    .item-title { font-weight: 700; font-size: 0.95rem; color: var(--text); }
+    .item-desc { font-size: 0.85rem; color: var(--text-muted); }
+    .checked .item-title, .checked .item-desc { text-decoration: line-through; opacity: 0.5; }
+
+    .btn-maps { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 6px; 
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); 
+      color: #fff; 
+      font-weight: 700; 
+      font-size: 0.8rem; 
+      padding: 10px 16px; 
+      border-radius: 12px; 
+      text-decoration: none; 
+      margin-top: 10px; 
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+    }
+    .link-ext { color: var(--primary); font-weight: 700; font-size: 0.85rem; text-decoration: none; display: inline-block; margin-top: 6px; }
+
+    .select-box { background: #f8fafc; padding: 10px; border-radius: 10px; border: 1px solid #e2e8f0; margin-top: 8px; }
+    .select-box label { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); display: block; margin-bottom: 4px; }
+    select { width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.85rem; background: #fff; font-weight: 600; }
+
+    .info-list { list-style: none; }
+    .info-list li { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .info-list li:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .badge { background: #e0f2fe; color: #0369a1; font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; display: inline-block; margin-bottom: 6px; }
+    .badge-orange { background: #ffedd5; color: #c2410c; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>💧 Escapada Lagunas de Ruidera</h1>
+    <p>17–20 de Agosto | 2 Adultos + 1 Niño 🚣‍♂️</p>
+  </header>
+
+  <div class="progress-bar-container">
+    <div class="progress-info">
+      <span>PROGRESO DE LA ESCAPADA</span>
+      <span id="prog-text">0%</span>
+    </div>
+    <div class="progress-bg">
+      <div class="progress-fill" id="prog-fill"></div>
+    </div>
+  </div>
+
+  <nav class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('itinerario', event)">📅 Itinerario</button>
+    <button class="tab-btn" onclick="switchTab('equipamiento', event)">🎒 Maleta</button>
+    <button class="tab-btn" onclick="switchTab('hospedaje', event)">🏡 Alojamiento</button>
+    <button class="tab-btn" onclick="switchTab('carretera', event)">🚗 GPS</button>
+    <button class="tab-btn" onclick="switchTab('restauracion', event)">🍽️ Dónde Comer</button>
+    <button class="tab-btn" onclick="switchTab('compras', event)">🧺 Compras Km0</button>
+    <button class="tab-btn" onclick="switchTab('historia', event)">🏛️ Historia</button>
+    <button class="tab-btn" onclick="switchTab('emergencias', event)">🚨 Emergencias</button>
+  </nav>
+
+  <main>
+
+    <!-- PESTAÑA 1: ITINERARIO -->
+    <section id="itinerario" class="tab-content active">
+      <div class="card">
+        <div class="card-title">Día 1: Madrid ➔ Argamasilla ➔ Check-in Los Montes & Baño</div>
+        <div class="card-subtitle">Lunes, 17 de Agosto</div>
+
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="r1">
+          <div>
+            <div class="item-time">09:00 – 11:30</div>
+            <div class="item-title">Salida de Madrid a Argamasilla de Alba 🚗</div>
+            <div class="item-desc">Ruta A-4 y A-43 (215 km / approx. 2h 15m).</div>
+          </div>
+        </div>
+
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="r2">
+          <div>
+            <div class="item-time">11:30 – 12:45</div>
+            <div class="item-title">Cueva de Medrano & Castillo de Peñarroya 📖🏰</div>
+            <div class="item-desc">Prisión cervantina y vistas al embalse a la entrada del parque.</div>
+          </div>
+        </div>
+
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="r3">
+          <div>
+            <div class="item-time">13:15 – 15:00</div>
+            <div class="item-title">Comida de llegada en Ruidera 🥘</div>
+            <div class="select-box">
+              <label>Selección guardada:</label>
+              <select id="sel-d1-comida">
+                <option value="">-- Elige opción --</option>
+                <option>Mesón Juan José (Ruidera pueblo)</option>
+                <option>Restaurante Albamanjon</option>
+                <option>Restaurante La Colgada</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="r4">
+          <div>
+            <div class="item-time">15:00 – 16:30</div>
+            <div class="item-title">Check-in Apartamentos Los Montes 🔑</div>
+            <div class="item-desc">Llegada dentro de la ventana (15:00-18:00). Acomodarse, deshacer maletas y ropa de baño.</div>
+          </div>
+        </div>
+
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="r5">
+          <div>
+            <div class="item-time">17:00 – 20:00</div>
+            <div class="item-title">Primer baño en Laguna del Rey 🏊‍♂️</div>
+            <div class="item-desc">Playa fluvial a un paso del apartamento, césped y zonas sombreadas.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Día 2: Kayak Familiar & Cascada El Hundimiento</div>
+        <div class="card-subtitle">Martes, 18 de Agosto</div>
+
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="r6">
+          <div>
+            <div class="item-time">10:00 – 12:30</div>
+            <div class="item-title">Ruta en Kayak o Paddle Surf 🚣</div>
+            <div class="item-desc">Actividad acuática familiar en Laguna Colgada o Batana.</div>
+          </div>
+        </div>
+
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="r7">
+          <div>
+            <div class="item-time">13:00 – 15:30</div>
+            <div class="item-title">Comida fresca o comida en el apartamento 🥗</div>
+            <div class="select-box">
+              <label>Selección guardada:</label>
+              <select id="sel-d2-comida">
+                <option value="">-- Elige opción --</option>
+                <option>Chiringuito Laguna Colgada</option>
+                <option>Restaurante Entremareas</option>
+                <option>Comida en Apartamento Los Montes</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="r8">
+          <div>
+            <div class="item-time">17:30 – 19:30</div>
+            <div class="item-title">Cascada El Hundimiento & Centro de Visitantes 💦</div>
+            <div class="item-desc">Paseo sombreado hacia el mayor salto de agua del parque.</div>
+          </div>
+        </div>
+
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="r9">
+          <div>
+            <div class="item-time">21:00</div>
+            <div class="item-title">Cena y paseo por el pueblo de Ruidera 🌙</div>
+            <div class="item-desc">Cena relajada y helado para el niño. Regreso a pie o en 2 min en coche a Los Montes.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Día 3: Montesinos ➔ Baño San Pedro ➔ Infantes</div>
+        <div class="card-subtitle">Miércoles, 19 de Agosto</div>
+
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="r10">
+          <div>
+            <div class="item-time">10:00 – 12:00</div>
+            <div class="item-title">Cueva de Montesinos (Ruta con linternas) 🦇</div>
+            <div class="item-desc">Aventura subterránea guiada. Reserva imprescindible.</div>
+          </div>
+        </div>
+
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="r11">
+          <div>
+            <div class="item-time">12:15 – 13:30</div>
+            <div class="item-title">Castillo de Rocha Frida 🛡️</div>
+            <div class="item-desc">Ruinas y vistas panorámicas del cauce alto.</div>
+          </div>
+        </div>
+
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="r12">
+          <div>
+            <div class="item-time">13:30 – 15:30</div>
+            <div class="item-title">Comida en Ossa de Montiel o San Pedro 🍖</div>
+            <div class="select-box">
+              <label>Selección guardada:</label>
+              <select id="sel-d3-comida">
+                <option value="">-- Elige opción --</option>
+                <option>Restaurante La Cueva del Peñón</option>
+                <option>Hostal Restaurante Albamonte</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="r13">
+          <div>
+            <div class="item-time">16:00 – 18:30</div>
+            <div class="item-title">Tarde de baño en Laguna San Pedro / Tomilla 🏖️</div>
+            <div class="item-desc">Baño refrescante en aguas calmas antes de vestirse para la ruta de tarde.</div>
+          </div>
+        </div>
+
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="r18">
+          <div>
+            <div class="item-time">19:00 – 21:30</div>
+            <div class="item-title">Paseo de Tarde por Villanueva de los Infantes 🏛️</div>
+            <div class="item-desc">Trayecto corto (25-30 min). Paseo por la Plaza Mayor barroca, casa solariega de Quevedo y fotos familiares.</div>
+          </div>
+        </div>
+
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="r19">
+          <div>
+            <div class="item-time">21:30</div>
+            <div class="item-title">Cena en la Plaza Mayor de Infantes 🍷</div>
+            <div class="item-desc">Raciones y cena en terraza aprovechando la frescura del anochecer antes de regresar al apartamento.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Día 4: Check-out ➔ Tomelloso ➔ Madrid</div>
+        <div class="card-subtitle">Jueves, 20 de Agosto</div>
+
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="r14">
+          <div>
+            <div class="item-time">09:00 – 10:30</div>
+            <div class="item-title">Desayuno tranquilo & Check-out 🧳</div>
+            <div class="item-desc">Devolución de llaves en Apartamentos Los Montes (Ventana: 09:00 - 11:00).</div>
+          </div>
+        </div>
+
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="r15">
+          <div>
+            <div class="item-time">11:15 – 13:00</div>
+            <div class="item-title">Parada en Tomelloso: Bombo manchego & Bodega 🍷</div>
+            <div class="item-desc">Visita rápida cultural y compras Km0 (queso y vino manchego).</div>
+          </div>
+        </div>
+
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="r16">
+          <div>
+            <div class="item-time">13:30 – 15:30</div>
+            <div class="item-title">Comida de despedida en Tomelloso 🍽️</div>
+            <div class="item-desc">Buen menú manchego antes de tomar la carretera.</div>
+          </div>
+        </div>
+
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="r17">
+          <div>
+            <div class="item-time">16:00 – 18:00</div>
+            <div class="item-title">Regreso sin prisas a Madrid 🏡</div>
+            <div class="item-desc">Llegada a casa descansados y con las pilas cargadas.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PESTAÑA 2: EQUIPAMIENTO / MALETA -->
+    <section id="equipamiento" class="tab-content">
+      <div class="card">
+        <div class="card-title">🏊‍♂️ Equipamiento de Baño & Agua</div>
+        <div class="card-subtitle">Imprescindible para las lagunas</div>
+
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="eq1">
+          <div>
+            <div class="item-title">Escarpines / Calzado de agua</div>
+            <div class="item-desc">Cruciales para el fondo de piedras y toba de las lagunas.</div>
+          </div>
+        </div>
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="eq2">
+          <div>
+            <div class="item-title">Bañadores (2 o 3 por persona)</div>
+            <div class="item-desc">Para tener siempre uno seco listo.</div>
+          </div>
+        </div>
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="eq3">
+          <div>
+            <div class="item-title">Toallas de playa o microfibra</div>
+            <div class="item-desc">Ligeras y de secado rápido.</div>
+          </div>
+        </div>
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="eq4">
+          <div>
+            <div class="item-title">Bolsa estanca (dry bag)</div>
+            <div class="item-desc">Para proteger móvil/cámara durante la ruta en kayak.</div>
+          </div>
+        </div>
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="eq5">
+          <div>
+            <div class="item-title">Gafas de bucear / Snorkel</div>
+            <div class="item-desc">Para explorar los peces en el agua turquesa.</div>
+          </div>
+        </div>
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="eq6">
+          <div>
+            <div class="item-title">Camiseta de agua con protección UV</div>
+            <div class="item-desc">Especialmente recomendada para el niño en el kayak.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">☀️ Protección Solar & Excursiones</div>
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="eq7">
+          <div>
+            <div class="item-title">Crema solar factor alto (Biodegradable)</div>
+            <div class="item-desc">Para cuidar la piel y no alterar el agua.</div>
+          </div>
+        </div>
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="eq8">
+          <div>
+            <div class="item-title">Gorras / Sombreros & Gafas de Sol</div>
+            <div class="item-desc">Para los tres durante las excursiones.</div>
+          </div>
+        </div>
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="eq10">
+          <div>
+            <div class="item-title">Repelente de mosquitos & Aftersun</div>
+            <div class="item-desc">Útil para los atardeceres junto al agua.</div>
+          </div>
+        </div>
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="eq12">
+          <div>
+            <div class="item-title">Calzado deportivo cómodo</div>
+            <div class="item-desc">Para la Cueva de Montesinos y paseos.</div>
+          </div>
+        </div>
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="eq13">
+          <div>
+            <div class="item-title">Linterna pequeña + Chaquetilla fina</div>
+            <div class="item-desc">Para el interior de la cueva (baja la temperatura).</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🏡 Apartamento & Documentación</div>
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="eq17">
+          <div>
+            <div class="item-title">Estropajo, jabón y pastillas lavavajillas</div>
+            <div class="item-desc">Básicos para la cocina de Los Montes.</div>
+          </div>
+        </div>
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="eq18">
+          <div>
+            <div class="item-title">Bolsas de basura extra & Botiquín básico</div>
+            <div class="item-desc">Tiritas, paracetamol, etc.</div>
+          </div>
+        </div>
+        <div class="item-row">
+          <input type="checkbox" class="chk" id="eq21">
+          <div>
+            <div class="item-title">DNI, Tarjetas Sanitarias y Reservas PDF</div>
+            <div class="item-desc">De los tres miembros de la familia.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PESTAÑA 3: HOSPEDAJE -->
+    <section id="hospedaje" class="tab-content">
+      <div class="card">
+        <div class="card-title">🏡 Tu Alojamiento Confirmado</div>
+        <div class="card-subtitle">Base Única para toda la escapada (3 Noches)</div>
+        
+        <ul class="info-list">
+          <li>
+            <span class="badge">Alojamiento Reservado</span>
+            <span class="badge badge-orange">17 al 20 de Agosto</span><br>
+            <strong style="font-size: 1.1rem;">Apartamentos Los Montes (Ruidera)</strong><br>
+            <span class="item-desc">📍 Calle Nueva, 20 / Urbanización Montes de Ruidera (13249 Ruidera, Ciudad Real)</span><br><br>
+            
+            <strong>⏰ Horarios de Recepción:</strong><br>
+            • <strong>Check-in (Lunes 17/08):</strong> 15:00 h – 18:00 h<br>
+            • <strong>Check-out (Jueves 20/08):</strong> 09:00 h – 11:00 h<br><br>
+
+            <a href="https://www.google.com/maps/search/?api=1&query=Apartamento+Los+Montes+Ruidera" target="_blank" class="btn-maps">📍 Abrir en Google Maps</a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- PESTAÑA 4: CARRETERA -->
+    <section id="carretera" class="tab-content">
+      <div class="card">
+        <div class="card-title">Navegación & Parkings Recomendados</div>
+        <ul class="info-list">
+          <li>
+            <strong>Tu Base: Apartamentos Los Montes</strong><br>
+            <a href="https://www.google.com/maps/search/?api=1&query=Apartamento+Los+Montes+Ruidera" target="_blank" class="btn-maps">📍 Navegar a Los Montes</a>
+          </li>
+          <li>
+            <strong>Plaza Mayor de Villanueva de los Infantes</strong><br>
+            <a href="https://www.google.com/maps/search/?api=1&query=Plaza+Mayor+Villanueva+de+los+Infantes" target="_blank" class="btn-maps">📍 Navegar a Infantes</a>
+          </li>
+          <li>
+            <strong>Cueva de Medrano (Argamasilla)</strong><br>
+            <a href="https://www.google.com/maps/search/?api=1&query=Cueva+de+Medrano+Argamasilla+de+Alba" target="_blank" class="btn-maps">📍 Navegar a Cueva Medrano</a>
+          </li>
+          <li>
+            <strong>Castillo de Peñarroya</strong><br>
+            <a href="https://www.google.com/maps/search/?api=1&query=Castillo+de+Peñarroya+Argamasilla" target="_blank" class="btn-maps">📍 Navegar a Peñarroya</a>
+          </li>
+          <li>
+            <strong>Laguna del Rey (Playa Fluvial)</strong><br>
+            <a href="https://www.google.com/maps/search/?api=1&query=Laguna+del+Rey+Ruidera" target="_blank" class="btn-maps">📍 Navegar a Laguna del Rey</a>
+          </li>
+          <li>
+            <strong>Cueva de Montesinos (Ossa de Montiel)</strong><br>
+            <a href="https://www.google.com/maps/search/?api=1&query=Cueva+de+Montesinos+Ossa+de+Montiel" target="_blank" class="btn-maps">📍 Navegar a Cueva Montesinos</a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- PESTAÑA 5: RESTAURACIÓN -->
+    <section id="restauracion" class="tab-content">
+      <div class="card">
+        <div class="card-title">Dónde Comer</div>
+        <ul class="info-list">
+          <li>
+            <span class="badge">Vistas Espectaculares</span><br>
+            <strong>Restaurante Albamanjon</strong><br>
+            <span class="item-desc">Terraza volada sobre la laguna. Carne a la brasa y arroces.</span>
+          </li>
+          <li>
+            <span class="badge">Familiar & Terraza</span><br>
+            <strong>Restaurante La Colgada</strong><br>
+            <span class="item-desc">Ideal tras el kayak. Menús para niños.</span>
+          </li>
+          <li>
+            <span class="badge">Pueblo de Ruidera</span><br>
+            <strong>Mesón Juan José</strong><br>
+            <span class="item-desc">Comida casera tradicional manchega.</span>
+          </li>
+          <li>
+            <span class="badge">Tarde/Noche en Infantes</span><br>
+            <strong>Terrazas de la Plaza Mayor de Infantes</strong><br>
+            <span class="item-desc">Raciones de queso manchego y pisto al aire libre.</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- PESTAÑA 6: COMPRAS KM0 -->
+    <section id="compras" class="tab-content">
+      <div class="card">
+        <div class="card-title">Productos Locales</div>
+        <ul class="info-list">
+          <li><strong>Queso Manchego D.O.:</strong> Oveja artesano curado o en aceite.</li>
+          <li><strong>Vinos D.O. La Mancha:</strong> Airén blanco y Tempranillo.</li>
+          <li><strong>Miel Pura de Tomillo:</strong> Recolectada en el parque.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- PESTAÑA 7: HISTORIA -->
+    <section id="historia" class="tab-content">
+      <div class="card">
+        <div class="card-title">Don Quijote y la Cueva de Montesinos</div>
+        <p class="item-desc">Capítulos XXII y XXIII de la segunda parte de El Quijote. Un punto mágico para los niños.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Villanueva de los Infantes</div>
+        <p class="item-desc">Arquitectura barroca única y lugar donde falleció Francisco de Quevedo.</p>
+      </div>
+    </section>
+
+    <!-- PESTAÑA 8: EMERGENCIAS -->
+    <section id="emergencias" class="tab-content">
+      <div class="card">
+        <div class="card-title">Puntos Sanitarios</div>
+        <ul class="info-list">
+          <li><strong>Consultorio Ruidera:</strong> Av. de la Mancha, s/n.</li>
+          <li><strong>Centro de Salud Argamasilla (24h):</strong> C/ Melquíades Álvarez.</li>
+          <li><strong>Hospital General Tomelloso:</strong> Vereda de Socuéllamos, s/n.</li>
+          <li><strong>Emergencias:</strong> <strong style="color:red;">112</strong></li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    function switchTab(tabId, event) {
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+      document.getElementById(tabId).classList.add('active');
+      if(event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+      }
+    }
+
+    const chks = document.querySelectorAll('.chk');
+    const progFill = document.getElementById('prog-fill');
+    const progText = document.getElementById('prog-text');
+
+    function updateProgress() {
+      let count = 0;
+      chks.forEach(c => {
+        const row = c.closest('.item-row');
+        if (c.checked) {
+          count++;
+          if (row) row.classList.add('checked');
+        } else {
+          if (row) row.classList.remove('checked');
+        }
+      });
+      const percent = Math.round((count / chks.length) * 100);
+      if(progFill) progFill.style.width = percent + '%';
+      if(progText) progText.textContent = percent + '%';
+    }
+
+    chks.forEach(c => {
+      c.addEventListener('change', () => {
+        localStorage.setItem(c.id, c.checked);
+        updateProgress();
+      });
+    });
+
+    const selects = document.querySelectorAll('select');
+    selects.forEach(s => {
+      s.addEventListener('change', () => {
+        localStorage.setItem(s.id, s.value);
+      });
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      chks.forEach(c => {
+        if (localStorage.getItem(c.id) === 'true') c.checked = true;
+      });
+      selects.forEach(s => {
+        const val = localStorage.getItem(s.id);
+        if (val) s.value = val;
+      });
+      updateProgress();
+    });
+  </script>
+</body>
+</html>
