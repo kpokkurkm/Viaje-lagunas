@@ -582,11 +582,56 @@
     <!-- PESTAÑA 6: COMPRAS KM0 -->
     <section id="compras" class="tab-content">
       <div class="card">
-        <div class="card-title">Productos Locales</div>
+        <div class="card-title">🧀 Queserías Artesanas (D.O. Queso Manchego)</div>
         <ul class="info-list">
-          <li><strong>Queso Manchego D.O.:</strong> Oveja artesano curado o en aceite.</li>
-          <li><strong>Vinos D.O. La Mancha:</strong> Airén blanco y Tempranillo.</li>
-          <li><strong>Miel Pura de Tomillo:</strong> Recolectada en el parque.</li>
+          <li>
+            <span class="badge">En Ruidera Pueblo</span><br>
+            <strong>Quesos Don Lorenzo (Ruidera)</strong><br>
+            <span class="item-desc"><strong>Qué comprar:</strong> Queso manchego artesano de oveja curado, semicurado y ahogado en aceite. Ideal para llevar sin desplazarte lejos.</span><br>
+            <a href="https://www.google.com/maps/search/?api=1&query=Quesos+Don+Lorenzo+Ruidera" target="_blank" class="btn-maps">📍 Navegar a Quesos Don Lorenzo</a>
+          </li>
+          <li>
+            <span class="badge">Argamasilla de Alba</span><br>
+            <strong>Quesería Artesanal Quesos de Alba</strong><br>
+            <span class="item-desc"><strong>Qué comprar:</strong> Quesos manchegos tradicionales, crema de queso artesana para untar y formatos en manteca de cerdo o romero.</span><br>
+            <a href="https://www.google.com/maps/search/?api=1&query=Queseria+Quesos+de+Alba+Argamasilla+de+Alba" target="_blank" class="btn-maps">📍 Navegar a Quesos de Alba</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🍷 Bodegas & Aceite de Oliva D.O.</div>
+        <ul class="info-list">
+          <li>
+            <span class="badge">Tomelloso</span><br>
+            <strong>Virgen de las Viñas Bodega y Almazara</strong><br>
+            <span class="item-desc"><strong>Qué comprar:</strong> Vinos D.O. La Mancha (Airén blanco fresco y Tempranillo), aceite de oliva virgen extra de cosecha propia y estuches regalo.</span><br>
+            <a href="https://www.google.com/maps/search/?api=1&query=Virgen+de+las+Vinas+Bodega+Tomelloso" target="_blank" class="btn-maps">📍 Navegar a Virgen de las Viñas</a>
+          </li>
+          <li>
+            <span class="badge">Tomelloso</span><br>
+            <strong>Bodegas Verum / Vinícola de Tomelloso</strong><br>
+            <span class="item-desc"><strong>Qué comprar:</strong> Vinos de autor, aguardientes y destilados artesanos manchegos elaborados en alambique tradicional.</span><br>
+            <a href="https://www.google.com/maps/search/?api=1&query=Bodegas+Verum+Tomelloso" target="_blank" class="btn-maps">📍 Navegar a Bodegas Verum</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🍯 Miel, Panadería & Productos del Parque</div>
+        <ul class="info-list">
+          <li>
+            <span class="badge">Ruidera Pueblo</span><br>
+            <strong>Panadería y Dulces San Antonio (Ruidera)</strong><br>
+            <span class="item-desc"><strong>Qué comprar:</strong> Pan sobado tradicional, tortas de manteca, roscos de vino, bizcochás manchegas y Magdalenas caseras para desayunar en el apartamento.</span><br>
+            <a href="https://www.google.com/maps/search/?api=1&query=Panaderia+San+Antonio+Ruidera" target="_blank" class="btn-maps">📍 Navegar a Panadería San Antonio</a>
+          </li>
+          <li>
+            <span class="badge">Ossa de Montiel</span><br>
+            <strong>Miel Pura del Parque Natural (Ossa de Montiel)</strong><br>
+            <span class="item-desc"><strong>Qué comprar:</strong> Miel artesana de tomillo, romero, espliego y polen fresco recolectado directamente en las colinas de las lagunas.</span><br>
+            <a href="https://www.google.com/maps/search/?api=1&query=Miel+Ossa+de+Montiel" target="_blank" class="btn-maps">📍 Navegar a Miel Ossa de Montiel</a>
+          </li>
         </ul>
       </div>
     </section>
@@ -618,7 +663,28 @@
 
   </main>
 
+  <!-- LIBRERÍAS DE FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
   <script>
+    // Configuración real con tus claves de Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdTTXmNbL5wDG8cS3xjYNjZdvi0qvnDeU",
+      authDomain: "viaje-lagunas.firebaseapp.com",
+      databaseURL: "https://viaje-lagunas-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "viaje-lagunas",
+      storageBucket: "viaje-lagunas.firebasestorage.app",
+      messagingSenderId: "1092773310086",
+      appId: "1:1092773310086:web:09585771bcaa9626bf6b07",
+      measurementId: "G-LX4F43LSV2"
+    };
+
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const stateRef = db.ref('appState');
+
     function switchTab(tabId, event) {
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -630,6 +696,7 @@
     }
 
     const chks = document.querySelectorAll('.chk');
+    const selects = document.querySelectorAll('select');
     const progFill = document.getElementById('prog-fill');
     const progText = document.getElementById('prog-text');
 
@@ -649,29 +716,35 @@
       if(progText) progText.textContent = percent + '%';
     }
 
+    // Escuchar cambios en tiempo real (Sincronización multi-dispositivo)
+    stateRef.on('value', (snapshot) => {
+      const data = snapshot.val() || {};
+
+      chks.forEach(c => {
+        c.checked = !!data[c.id];
+      });
+
+      selects.forEach(s => {
+        if (data[s.id]) {
+          s.value = data[s.id];
+        }
+      });
+
+      updateProgress();
+    });
+
+    // Guardar cambios al marcar o desmarcar
     chks.forEach(c => {
       c.addEventListener('change', () => {
-        localStorage.setItem(c.id, c.checked);
-        updateProgress();
+        db.ref('appState/' + c.id).set(c.checked);
       });
     });
 
-    const selects = document.querySelectorAll('select');
+    // Guardar cambios al elegir en desplegables
     selects.forEach(s => {
       s.addEventListener('change', () => {
-        localStorage.setItem(s.id, s.value);
+        db.ref('appState/' + s.id).set(s.value);
       });
-    });
-
-    window.addEventListener('DOMContentLoaded', () => {
-      chks.forEach(c => {
-        if (localStorage.getItem(c.id) === 'true') c.checked = true;
-      });
-      selects.forEach(s => {
-        const val = localStorage.getItem(s.id);
-        if (val) s.value = val;
-      });
-      updateProgress();
     });
   </script>
 </body>
